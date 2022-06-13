@@ -9,12 +9,14 @@
 namespace shb{
 
     enum{
-    BUTTON_X,
-    BUTTON_Y,
-    BUTTON_Z,
-    BUTTON_W,
-    BUTTON_UP,
-    BUTTON_DWN
+    BUTTON_X, //1
+    BUTTON_Y, //2
+    BUTTON_Z, //3
+    BUTTON_W, //4
+    BUTTON_UP, //5
+    BUTTON_DWN, //6
+    BUTTON_LFT, //7
+    BUTTON_RGT //8
     }; 
 
 class VirtualEntity{
@@ -33,6 +35,8 @@ class Entity : public VirtualEntity{
     virtual void poo(){}
     virtual void cry(){}
     virtual void moveTo(int, int){}
+    int x() { return x_; }
+    int y() { return y_; }
 
     int x_, y_;
 };
@@ -44,30 +48,41 @@ class Entity : public VirtualEntity{
 ////////////////////////////////////////////
 
 
-class Command 
+class virtCommand 
+{
+ public:
+    virtCommand(){}
+    virtual ~virtCommand() {}
+    virtual void execute(Entity&) = 0;
+    virtual void execute() = 0;
+
+};
+class Command : virtCommand 
 {
  public:
     Command() {}
     virtual ~Command() {}
-    virtual void execute(Entity&) = 0;
+    virtual void execute(Entity&){}
+    virtual void execute() {}
 
 };
 
+class MoveUnitCmd : public Command
+{
+ public:
+    MoveUnitCmd(Entity* unit, int x, int y) : unit_(unit), x_(x), y_(y){ }
+  
+    virtual void execute(){
+        std::cout<< "moved " << typeid(*this).name() << "x: " << x_ << "Y: " << y_ << "\n";
+        unit_->moveTo(x_,y_);
+    }
 
+ private:
+   Entity* unit_;
+   int x_;
+   int y_;
+};
 
-
-// class MoveUnitCmd : public Command{
-//  public:
-     
-//      MoveUnitCmd(Entity* unit, int x, int y) : unit_(unit), x_(x), y_(y){}
-
-//      virtual void execute() override {
-//         unit_->moveTo(x_,y_);
-//      }
-
-//      Entity* unit_;
-//      int x_, y_;
-// };
 
 
 
@@ -76,7 +91,7 @@ class Command
 class JumpCmd : public Command {
  public:
     JumpCmd() = default;
-    
+    virtual void execute(){}
     virtual void execute(Entity& entity){
         entity.jump();
     }
@@ -86,6 +101,7 @@ class JumpCmd : public Command {
 class ShootCmd : public Command {
  public:
     ShootCmd() = default;
+    virtual void execute(){}
     virtual void execute(Entity& entity){
         entity.shoot();
     }
@@ -94,6 +110,7 @@ class ShootCmd : public Command {
 class CryCmd : public Command {
  public:
     CryCmd() = default;
+    virtual void execute(){}
     virtual void execute(Entity& entity){
         entity.cry();
     }
@@ -102,6 +119,7 @@ class CryCmd : public Command {
 class PooCmd : public Command {
  public:
     PooCmd() = default;
+    virtual void execute(){}
     virtual void execute(Entity& entity){
         entity.poo();
     }
@@ -122,7 +140,7 @@ bool isPressed(int button){
 
 
 Entity* getSelectedUnit(){
-
+ //todo
 
 }
 
@@ -147,8 +165,21 @@ class InputHandler {
             else if(i == BUTTON_Z){
                 return button_z;
             }
-            else if(i == BUTTON_W){
-                return button_w;
+            else if(i == BUTTON_DWN){ //move unit up one
+                int destY = unit->y() -1;
+                return new MoveUnitCmd(unit, destY, unit->x());
+            }
+            else if(i == BUTTON_UP){ //move down
+                int destY = unit->y() +1;
+                return new MoveUnitCmd(unit, destY, unit->x());
+            }
+            else if(i == BUTTON_LFT){ //move unit left one
+                int destX = unit->x() -1;
+                return new MoveUnitCmd(unit, unit->y(), destX);
+            }
+            else if(i == BUTTON_RGT){ //move right
+                int destX = unit->x() +1;
+                return new MoveUnitCmd(unit, unit->y(), destX);
             }
            
             else{

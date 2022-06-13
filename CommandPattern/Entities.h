@@ -21,14 +21,7 @@ class Cat : public Entity{
     std::cout<< typeid(*this).name() << "cries!\n";
    }
 
-   //movement
-   void moveTo(int x, int y) override{
-    x_ = x;
-    y_ = y;
-   }
 
- private:
-   int x_,y_;
 };
 
 
