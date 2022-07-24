@@ -5,6 +5,7 @@ int main()
     shb::Cat cat;
     shb::Dog dog;
     shb::Carrot* carrot = new shb::Carrot;
+    shb::InputHandler inputHandler;
     
 while(true){
 
@@ -12,8 +13,6 @@ while(true){
     std::cout<< "Enter command: ";
     std::cin >> i;
 
-
-    shb::InputHandler inputHandler;
     shb::Command* command = inputHandler.handleInput(i);
     if(command){
         command->execute(cat);
