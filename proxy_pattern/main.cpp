@@ -11,12 +11,13 @@ class BookParser : public IBookParser{
  private:
     BookParser(std::string book) {
         std::cout << "Expensive operation\n";
+        std::cout <<"Parser instantiated from proxy\n";
     }
     virtual void getNumPages() override {
         std::cout<<"getNumPages\n";
     }
     virtual void exserpt() override {
-        std::cout<<"Cheap opperation\n" << exserptString << "\n";
+        std::cout<<"Cheap operation\n" << exserptString << "\n";
 
     }
 
@@ -45,7 +46,6 @@ class BookParserProxy : public IBookParser{
 
         if(bookParser == nullptr) { 
             bookParser = new BookParser(book);
-            std::cout <<"Parser instantiated from proxy\n";
         }
         return bookParser->getNumPages();
     }
