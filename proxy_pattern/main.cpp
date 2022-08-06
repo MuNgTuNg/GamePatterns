@@ -24,7 +24,8 @@ class BookParser : public IBookParser{
     std::string exserptString = "hello i am an excerpt";
 };
 
-class BookParserProxy : public IBookParser{
+class BookParserProxy : public IBookParser{ //object essentially just delegates to other object, 
+                                            //controls access to underlying object
 
  public:
 
